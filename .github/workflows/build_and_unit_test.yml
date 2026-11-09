@@ -12,6 +12,10 @@ jobs:
 
   build_and_unit_test:
     runs-on: ubuntu-latest
+    env:
+      # Set GOPATH before setup-go runs, so that its cache restore and
+      # its cache save both use the same module cache directory.
+      GOPATH: ${{ github.workspace }}/go
     steps:
     - uses: actions/checkout@v4
       with:
@@ -22,10 +26,10 @@ jobs:
       uses: actions/setup-go@v5
       with:
         go-version: "1.25"
+        cache-dependency-path: go/src/github.com/apache/cloudberry-backup/go.sum
 
     - name: Set Environment
       run: |
-        echo "GOPATH=${GITHUB_WORKSPACE}/go" >> $GITHUB_ENV
         echo "${GITHUB_WORKSPACE}/go/bin" >> $GITHUB_PATH
 
     - name: Dependencies
